@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from "react"
 import Card from "./Card"
+
+type CardJson={
+    id : string,
+    img : string,
+    imgalt:string,
+    desc:string,
+    price : number,
+    productname :string,
+}
+
 interface Props{
 
 }
 
 const CardContainer=({}:Props)=>{
-    const [cards,setCards]=useState<any[]>([])
+    const [cards,setCards]=useState<CardJson[]>([])
 
     useEffect(()=>{
-        console.log('Component Did Mount Called: ' + new Date().toLocaleString());
         fetch('cards.json')
             .then(res => res.json())
             .then((result) => {
-                console.log('Fetch...');
-                setCards(result)
+                const cards=result as CardJson[]
+                setCards(cards)
             });
     },[])
-
 
     let items = cards.map(
         card => <Card key={card.id} {...card} />
     );
-    
 
     return (
         <div className='container pt-4'>
