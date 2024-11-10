@@ -1,6 +1,6 @@
 package dblayer
 
-import("https://github.com/ProgrammerSteve/goBookTutorial/backend/src/models")
+import("github.com/ProgrammerSteve/goBookTutorial/backend/src/models")
 
 type DBLayer interface{
 	GetAllProducts() ([]models.Product, error)

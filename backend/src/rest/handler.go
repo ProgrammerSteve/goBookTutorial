@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"https://github.com/ProgrammerSteve/goBookTutorial/backend/src/dblayer"
-	"https://github.com/ProgrammerSteve/goBookTutorial/backend/src/models"
+	"github.com/ProgrammerSteve/goBookTutorial/backend/src/dblayer"
+	"github.com/ProgrammerSteve/goBookTutorial/backend/src/models"
 	"github.com/gin-gonic/gin"
 )
 
