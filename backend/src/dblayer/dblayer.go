@@ -1,6 +1,8 @@
 package dblayer
 
 import (
+	"errors"
+
 	"github.com/ProgrammerSteve/goBookTutorial/src/models"
 )
 
@@ -15,3 +17,5 @@ type DBLayer interface {
 	SignOutUserById(int) error
 	GetCustomerOrdersByID(int) ([]models.Order, error)
 }
+
+var ErrINVALIDPASSWORD = errors.New("invalid password")

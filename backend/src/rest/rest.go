@@ -1,13 +1,16 @@
 package rest
 
 import (
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RunAPIWithHandler(address string, h HandlerInterface) error {
-	r := gin.Default()
+	r := gin.Default() //gin.New() gets rid of default middlware
 
 	r.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"res": "okay"}) })
 	r.GET("/products", h.GetProducts)
@@ -26,7 +29,14 @@ func RunAPIWithHandler(address string, h HandlerInterface) error {
 		usersGroups.POST("", h.AddUser)
 	}
 
-	return r.Run(address)
+	//return r.Run(address)
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	certPath := filepath.Join(wd, "cert.pem")
+	keyPath := filepath.Join(wd, "key.pem")
+	return r.RunTLS(address, certPath, keyPath)
 }
 
 func RunAPI(address string) error {

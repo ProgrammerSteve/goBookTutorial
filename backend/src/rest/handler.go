@@ -62,8 +62,12 @@ func (h *Handler) SignIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	customer, err = h.db.SignInUser(customer)
+	customer, err = h.db.SignInUser(customer.Email, customer.Pass)
 	if err != nil {
+		if err == dblayer.ErrINVALIDPASSWORD {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -122,6 +126,7 @@ func (h *Handler) GetOrders(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, orders)
 }
+
 func (h *Handler) Charge(c *gin.Context) {
 	if h.db == nil {
 		return
