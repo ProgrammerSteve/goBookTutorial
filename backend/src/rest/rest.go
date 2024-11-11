@@ -1,50 +1,38 @@
 package rest
 
-import(
+import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
-func RunAPI(address string)error{
-	r:=gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		//take action
-	  })
+func RunAPIWithHandler(address string, h HandlerInterface) error {
+	r := gin.Default()
 
-	   //get products
-  r.GET("/products",func(c *gin.Context) {
-	//return a list of all products to the client
-  
-//get promos
-r.GET("/promos",func(c *gin.Context) {
-	//return a list of all promotions to the client
-  }
-)
- //post user sign in
- r.POST("/users/signin", func(c *gin.Context) {
-	//sign in a user
-  }
-)
-//add user
-r.POST("/users",func(c *gin.Context){
-	  //add a user
-  }
-)
- //post user sign out
-r.POST("/user/:id/signout",func(c *gin.Context) {
-	//sign out a user with the provided id
-  }
-)
+	r.GET("/", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"res": "okay"}) })
+	r.GET("/products", h.GetProducts)
+	r.GET("/promos", h.GetPromos)
 
- //get user orders
- r.GET("/user/:id/orders", func(c *gin.Context) {
-	//get all orders belonging to the provided user id
-  }
-)
+	userGroup := r.Group("/user")
+	{
+		userGroup.POST("/:id/signout", h.SignOut)
+		userGroup.GET("/:id/orders", h.GetOrders)
+	}
 
+	usersGroups := r.Group("/users")
+	{
+		usersGroups.POST("/charge", h.Charge)
+		usersGroups.POST("/signin", h.SignIn)
+		usersGroups.POST("", h.AddUser)
+	}
 
- //post purchase charge
- r.POST("/users/charge", func(c *gin.Context) {
-	//charge credit card for user
-  }
-)
+	return r.Run(address)
+}
+
+func RunAPI(address string) error {
+	h, err := NewHandler()
+	if err != nil {
+		return err
+	}
+	return RunAPIWithHandler(address, h)
 }
