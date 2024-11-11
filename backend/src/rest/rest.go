@@ -40,7 +40,7 @@ func RunAPIWithHandler(address string, h HandlerInterface) error {
 }
 
 func RunAPI(address string) error {
-	h, err := NewHandler("mysql", "root:root@/gomusic")
+	h, err := NewHandler("mysql", "root:test123@tcp(127.0.0.1:3306)/gomusic?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		log.Println("Failed to connect to database")
 		return err

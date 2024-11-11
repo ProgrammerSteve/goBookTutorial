@@ -28,8 +28,9 @@ type Customer struct {
 }
 
 type Order struct {
-	Product
-	Customer
+	gorm.Model
+	Product      `sql:"-"`
+	Customer     `sql:"-"`
 	CustomerID   int       `gorm:"column:customer_id"`
 	ProductID    int       `gorm:"column:product_id"`
 	Price        float64   `gorm:"price" json:"sell_price"`

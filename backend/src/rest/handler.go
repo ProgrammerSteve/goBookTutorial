@@ -33,6 +33,8 @@ func NewHandler(dbtype, constring string) (HandlerInterface, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.AutoMigrate(&models.Product{}, &models.Customer{}, &models.Order{})
+
 	return &Handler{
 		db: db,
 	}, nil
