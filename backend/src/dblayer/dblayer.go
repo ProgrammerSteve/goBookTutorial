@@ -1,8 +1,10 @@
 package dblayer
 
-import("github.com/ProgrammerSteve/goBookTutorial/src/models")
+import (
+	"github.com/ProgrammerSteve/goBookTutorial/src/models"
+)
 
-type DBLayer interface{
+type DBLayer interface {
 	GetAllProducts() ([]models.Product, error)
 	GetPromos() ([]models.Product, error)
 	GetCustomerByName(string, string) (models.Customer, error)
@@ -12,4 +14,4 @@ type DBLayer interface{
 	SignInUser(username, password string) (models.Customer, error)
 	SignOutUserById(int) error
 	GetCustomerOrdersByID(int) ([]models.Order, error)
-   }
+}
