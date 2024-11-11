@@ -15,7 +15,7 @@ type DBORM struct {
 
 // takes in a database name and connection string
 // returns address to DBORM struct that embeds gorm.DB and err
-func NewOrm(dbname, con string) (*DBORM, error) {
+func NewORM(dbname, con string) (*DBORM, error) {
 	db, err := gorm.Open(dbname, con)
 	return &DBORM{
 		DB: db,
@@ -44,13 +44,13 @@ func checkPassword(existingHash, incomingPass string) bool {
 func (db *DBORM) GetAllProducts() (products []models.Product, err error) {
 	return products, db.Find(&products).Error
 }
-func (db *DBORM) GetAllPromos() (products []models.Product, err error) {
+func (db *DBORM) GetPromos() (products []models.Product, err error) {
 	return products, db.Where("promotion IS NOT NULL").Find(&products).Error
 }
 func (db *DBORM) GetCustomerByName(firstname, lastname string) (customer models.Customer, err error) {
 	return customer, db.Where(&models.Customer{FirstName: firstname, LastName: lastname}).Find(&customer).Error
 }
-func (db *DBORM) GetCustomerById(id int) (customer models.Customer, err error) {
+func (db *DBORM) GetCustomerByID(id int) (customer models.Customer, err error) {
 	return customer, db.First(&customer, id).Error
 }
 func (db *DBORM) GetProduct(id int) (product models.Product, err error) {
@@ -92,4 +92,21 @@ func (db *DBORM) SignOutUserById(id int) error {
 }
 func (db *DBORM) GetCustomerOrdersByID(id int) (orders []models.Order, err error) {
 	return orders, db.Table("orders").Select("*").Joins("join customers on customers.id = customer_id").Joins("join products on products.id = product_id").Where("customer_id = ?", id).Scan(&orders).Error
+}
+
+func (db *DBORM) AddOrder(order models.Order) error {
+	return db.Create(&order).Error
+}
+
+func (db *DBORM) GetCreditCardCID(id int) (string, error) {
+	customerWithCCID := struct {
+		models.Customer
+		CCID string `gorm:"column:cc_customerid"`
+	}{}
+	return customerWithCCID.CCID, db.First(&customerWithCCID, id).Error
+}
+
+func (db *DBORM) SaveCreditCardForCustomer(id int, ccid string) error {
+	result := db.Table("customers").Where("id=?", id)
+	return result.Update("cc_customerid", ccid).Error
 }
